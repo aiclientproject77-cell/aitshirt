@@ -1,6 +1,4 @@
-const [isListening, setIsListening] =
-  useState(false);
-  import React, {
+import React, {
   useState,
   useRef
 } from "react";
@@ -141,6 +139,9 @@ export default function AIWorkspace() {
   const [successMessage,
     setSuccessMessage] =
     useState("");
+  const [isListening,
+    setIsListening] =
+    useState(false);
 
 
   // =====================================
@@ -213,7 +214,7 @@ export default function AIWorkspace() {
   // =====================================
   // GENERATE
   // =====================================
-  const startListening = () => {
+const startListening = () => {
 
   const SpeechRecognition =
     window.SpeechRecognition ||
@@ -256,21 +257,11 @@ export default function AIWorkspace() {
       generationMode === "single"
     ) {
 
-      setPrompt(
-        (prev) =>
-          prev
-            ? prev + " " + transcript
-            : transcript
-      );
+      setPrompt(transcript);
 
     } else {
 
-      setCouplePrompt(
-        (prev) =>
-          prev
-            ? prev + " " + transcript
-            : transcript
-      );
+      setCouplePrompt(transcript);
     }
   };
 
@@ -817,29 +808,17 @@ export default function AIWorkspace() {
               mt-4
             "
           >
+           <GenerateButton
+
+            loading={loading}
+
+             handleGenerate={
+             handleGenerate
+             }
+
+          />
 
             <button
-              className="
-                w-16
-                h-16
-                rounded-full
-                bg-cyan-500
-                flex
-                items-center
-                justify-center
-              "
-            >
-
-              <Mic size={30} />
-
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <button
 
   onClick={startListening}
 
@@ -861,6 +840,12 @@ export default function AIWorkspace() {
   <Mic size={30} />
 
 </button>
+
+          </div>
+
+        </div>
+
+
 
 
         {/* SINGLE */}
