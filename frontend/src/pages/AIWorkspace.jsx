@@ -1,4 +1,6 @@
-import React, {
+const [isListening, setIsListening] =
+  useState(false);
+  import React, {
   useState,
   useRef
 } from "react";
@@ -211,7 +213,69 @@ export default function AIWorkspace() {
   // =====================================
   // GENERATE
   // =====================================
+  const startListening = () => {
 
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+
+    alert(
+      "Speech recognition not supported in this browser"
+    );
+
+    return;
+  }
+
+  const recognition =
+    new SpeechRecognition();
+
+  recognition.lang = "en-IN";
+
+  recognition.continuous = false;
+
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+
+    setIsListening(true);
+  };
+
+  recognition.onend = () => {
+
+    setIsListening(false);
+  };
+
+  recognition.onresult = (event) => {
+
+    const transcript =
+      event.results[0][0].transcript;
+
+    if (
+      generationMode === "single"
+    ) {
+
+      setPrompt(
+        (prev) =>
+          prev
+            ? prev + " " + transcript
+            : transcript
+      );
+
+    } else {
+
+      setCouplePrompt(
+        (prev) =>
+          prev
+            ? prev + " " + transcript
+            : transcript
+      );
+    }
+  };
+
+  recognition.start();
+};
   const handleGenerate =
     async () => {
 
@@ -775,22 +839,28 @@ export default function AIWorkspace() {
         </div>
 
 
-        <GenerateButton
+        <button
 
-          loading={loading}
+  onClick={startListening}
 
-          handleGenerate={
-            handleGenerate
-          }
-        />
+  className={`
+    w-16
+    h-16
+    rounded-full
+    flex
+    items-center
+    justify-center
+    ${
+      isListening
+        ? "bg-red-500"
+        : "bg-cyan-500"
+    }
+  `}
+>
 
+  <Mic size={30} />
 
-        <GenerationLoader
-
-          generationStep={
-            generationStep
-          }
-        />
+</button>
 
 
         {/* SINGLE */}
